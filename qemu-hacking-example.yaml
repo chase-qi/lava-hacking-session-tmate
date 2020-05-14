@@ -1,0 +1,59 @@
+device_type: qemu
+job_name: qemu hacking session tmate
+
+timeouts:
+  job:
+    minutes: 15
+  action:
+    minutes: 5
+  connection:
+    minutes: 3
+
+priority: medium
+visibility: public
+
+context:
+  arch: arm64
+  machine: virt
+  netdevice: tap
+  cpu: cortex-a57
+  guestfs_interface: virtio
+  extra_options:
+  - -smp
+  - 1
+
+actions:
+- deploy:
+    to: tmpfs
+    os: oe
+    images:
+      kernel:
+        image_arg: -kernel {kernel}
+        url: https://people.linaro.org/~loic.poulain/linux/Image-5.4.0-rc6-aarch64.gz
+        compression: gz
+      initrd:
+        image_arg: -initrd {initrd}
+        url: https://people.linaro.org/~loic.poulain/micro-rootfs/micro-rootfs-dev-aarch64.cpio.gz
+    os: oe
+
+- boot:
+    method: qemu
+    media: tmpfs
+    timeout:
+      minutes: 2
+    auto_login:
+      login_prompt: "login:"
+      username: root
+    prompts:
+    - 'micro#'
+
+- test:
+    failure_retry: 3
+    name: kvm-basic-hacking-session
+    timeout:
+      minutes: 120
+    definitions:
+      - repository: https://github.com/loicpoulain/lava-hacking-session-tmate.git
+        from: git
+        path: hacking-session-tmate.yaml
+        name: hacking-sesion

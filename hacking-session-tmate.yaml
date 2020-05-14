@@ -1,0 +1,9 @@
+metadata:
+  name: hacking-session-tmate
+  format: "Lava-Test-Shell Test Definition 1.0"
+  description: "SSH Hacking Session"
+  version: 1.0
+
+run:
+  steps:
+    - ./tmate -F
