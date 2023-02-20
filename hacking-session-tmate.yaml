@@ -6,4 +6,4 @@ metadata:
 
 run:
   steps:
-    - ./tmate -F
+    - ./$(uname -a)/tmate -F
